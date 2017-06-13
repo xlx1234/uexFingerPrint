@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<uexplugins>
+    <plugin
+        uexName="uexFingerPrint" version="4.0.0" build="0">
+        <info>0:系统指纹识别功能</info>
+    </plugin>
+
+</uexplugins>
