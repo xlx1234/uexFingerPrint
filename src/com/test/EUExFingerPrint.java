@@ -90,7 +90,7 @@ public class EUExFingerPrint extends EUExBase {
         }
         cbAuthenticateFunId = params[params.length -1];
         if(!isInit){
-            callbackAuthenticate(ERROR_NO_INIT, "初始化失败");
+            callbackAuthenticate(ERROR_NO_INIT, "未初始化");
             return;
         }
         AuthenticateVO data = new AuthenticateVO();
