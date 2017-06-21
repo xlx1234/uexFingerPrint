@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        className="com.test.EUExDemo" uexName="uexFingerPrint" >
+        className="com.test.EUExFingerPrint" uexName="uexFingerPrint" >
         <method name = "authenticate" />
         <method name = "init" />
     </plugin>
