@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexFingerPrint" version="4.1.0" build="0">
-        <info>0:(依赖引擎4.1.7)系统指纹识别功能</info>
+        uexName="uexFingerPrint" version="4.1.1" build="1">
+        <info>1:添加取消接口</info>
+        <build>0:(依赖引擎4.1.7)系统指纹识别功能</build>
     </plugin>
 
 </uexplugins>

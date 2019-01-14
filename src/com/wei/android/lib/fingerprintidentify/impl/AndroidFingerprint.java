@@ -2,6 +2,7 @@ package com.wei.android.lib.fingerprintidentify.impl;
 
 import android.app.Activity;
 import android.support.v4.os.CancellationSignal;
+import android.util.Log;
 
 import com.wei.android.lib.fingerprintidentify.aosp.FingerprintManagerCompat;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint;
@@ -67,11 +68,14 @@ public class AndroidFingerprint extends BaseFingerprint {
                 public void onAuthenticationError(int errMsgId, CharSequence errString) {
                     super.onAuthenticationError(errMsgId, errString);
                     onFailed();
+                    Log.e("111", String.valueOf(errMsgId));
+                    Log.e("222",errString+"");
                 }
             }, null);
         } catch (Throwable e) {
             onCatchException(e);
             onFailed();
+
         }
     }
 

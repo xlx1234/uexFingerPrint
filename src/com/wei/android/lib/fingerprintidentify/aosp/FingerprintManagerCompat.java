@@ -121,6 +121,7 @@ public final class FingerprintManagerCompat {
         }
 
         public void onAuthenticationFailed() {
+
         }
     }
 

@@ -1,6 +1,7 @@
 package com.wei.android.lib.fingerprintidentify.base;
 
 import android.app.Activity;
+import android.util.Log;
 
 /**
  * Copyright (c) 2017 Awei
@@ -166,10 +167,11 @@ public abstract class BaseFingerprint {
                 @Override
                 public void run() {
                     mIdentifyListener.onFailed();
+                    Log.e("222","失败");
+
                 }
             });
         }
-
         cancelIdentify();
     }
 

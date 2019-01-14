@@ -2,6 +2,7 @@ package com.test;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 
 import com.test.vo.AuthenticateVO;
 import com.wei.android.lib.fingerprintidentify.FingerprintIdentify;
@@ -55,66 +56,72 @@ public class EUExFingerPrint extends EUExBase {
             return;
         }
         cbInitFunId = params[params.length -1];
-        mFingerprintIdentify = new FingerprintIdentify((Activity) mContext, new BaseFingerprint.FingerprintIdentifyExceptionListener() {
-            @Override
-            public void onCatchException(Throwable exception) {
-                callbackInit(EUExCallback.F_C_FAILED, exception.getLocalizedMessage());
+          mFingerprintIdentify = new FingerprintIdentify((Activity) mContext, new BaseFingerprint.FingerprintIdentifyExceptionListener() {
+                @Override
+                public void onCatchException(Throwable exception) {
+                    callbackInit(EUExCallback.F_C_FAILED, exception.getLocalizedMessage());
+                }
+            });
+
+            if(!mFingerprintIdentify.isHardwareEnable()){
+                callbackInit(ERROR_DISABLE_HARDWARE, "设备硬件不支持指纹识别");
+                return;
             }
-        });
 
-        if(!mFingerprintIdentify.isHardwareEnable()){
-            callbackInit(ERROR_DISABLE_HARDWARE, "设备硬件不支持指纹识别");
-            return;
-        }
+            if(!mFingerprintIdentify.isRegisteredFingerprint()){
+                callbackInit(ERROR_UNREGISTERED, "未注册指纹");
+                return;
+            }
 
-        if(!mFingerprintIdentify.isRegisteredFingerprint()){
-            callbackInit(ERROR_UNREGISTERED, "未注册指纹");
-            return;
-        }
-
-        if(!mFingerprintIdentify.isFingerprintEnable()){
-            callbackInit(ERROR_DISABLE_FINGERPRINT, "指纹识别不可用");
-            return;
-        }
+            if(!mFingerprintIdentify.isFingerprintEnable()){
+                callbackInit(ERROR_DISABLE_FINGERPRINT, "指纹识别不可用");
+                return;
+            }
         mIsCalledStartIdentify = false;
         isInit = true;
         callbackInit(EUExCallback.F_C_SUCCESS);
+      }
+
+
+
+    public void authenticate(final String[] params){
+                if(params.length < 1){
+                    errorCallback(0,0,"error params!");
+                    return;
+                }
+                cbAuthenticateFunId = params[params.length -1];
+                if(!isInit){
+                    callbackAuthenticate(ERROR_NO_INIT, "未初始化");
+                    return;
+                }
+                AuthenticateVO data = new AuthenticateVO();
+                if(params.length > 1){
+                    data = DataHelper.gson.fromJson(params[0], AuthenticateVO.class);
+                }
+                mIsCalledStartIdentify = true;
+                mFingerprintIdentify.resumeIdentify();
+                mFingerprintIdentify.startIdentify(data.getMaxTries(), new BaseFingerprint.FingerprintIdentifyListener() {
+                    @Override
+                    public void onSucceed() {
+                        callbackAuthenticate(EUExCallback.F_C_SUCCESS);
+                    }
+
+                    @Override
+                    public void onNotMatch(int availableTimes) {
+                        callbackAuthenticate(ERROR_NOT_MATCH, "指纹不匹配，还剩" + availableTimes + "次尝试机会");
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        callbackAuthenticate(EUExCallback.F_C_FAILED, "识别失败");
+                    }
+                });
+
     }
 
-
-
-    public void authenticate(String[] params){
-        if(params.length < 1){
-            errorCallback(0,0,"error params!");
-            return;
-        }
-        cbAuthenticateFunId = params[params.length -1];
-        if(!isInit){
-            callbackAuthenticate(ERROR_NO_INIT, "未初始化");
-            return;
-        }
-        AuthenticateVO data = new AuthenticateVO();
-        if(params.length > 1){
-            data = DataHelper.gson.fromJson(params[0], AuthenticateVO.class);
-        }
-        mIsCalledStartIdentify = true;
-        mFingerprintIdentify.resumeIdentify();
-        mFingerprintIdentify.startIdentify(data.getMaxTries(), new BaseFingerprint.FingerprintIdentifyListener() {
-            @Override
-            public void onSucceed() {
-                callbackAuthenticate(EUExCallback.F_C_SUCCESS);
-            }
-
-            @Override
-            public void onNotMatch(int availableTimes) {
-                callbackAuthenticate(ERROR_NOT_MATCH, "指纹不匹配，还剩" + availableTimes + "次尝试机会");
-            }
-
-            @Override
-            public void onFailed() {
-                callbackAuthenticate(EUExCallback.F_C_FAILED, "识别失败");
-            }
-        });
+    public void cancel(String [] params){
+        mIsCalledStartIdentify=false;
+        mFingerprintIdentify.cancelIdentify();
     }
 
     private void callbackInit(int error){

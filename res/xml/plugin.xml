@@ -4,5 +4,6 @@
         className="com.test.EUExFingerPrint" uexName="uexFingerPrint" >
         <method name = "authenticate" />
         <method name = "init" />
+        <method name = "cancel" />
     </plugin>
 </uexplugins>
